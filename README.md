@@ -325,3 +325,181 @@ Collection run completed.
 | **Overall Summary**         | **Passed** | **515ms**          |
 
 ---
+
+##Scenarios based in field triggers:
+
+---
+
+### **Test Scenarios Based on the Given Behavior**
+
+| **Scenario**                 | **Input**                                   | **Expected Response**                                            |
+|------------------------------|---------------------------------------------|------------------------------------------------------------------|
+| **Empty Username or Password** | `{"username": "", "password": "ValidPass123!"}` <br> OR <br> `{"username": "validUser", "password": ""}` | `400 Bad Request` <br> Message: `"Username and password are required."` |
+| **Invalid Login**            | `{"username": "invaliduser@example.com", "password": "ValidPass123!"}` | `401 Unauthorized` <br> Message: `"Invalid username or password."` |
+| **Malformed JSON Response**  | `{"username": "malformeduser@example.com", "password": "ValidPass123!"}` | Response contains malformed JSON. |
+| **Server Error**             | `{"username": "erroruser@example.com", "password": "ValidPass123!"}` | `500 Internal Server Error` <br> Message: `"An unexpected error occurred."` |
+| **Slow Response**            | `{"username": "slowuser@example.com", "password": "ValidPass123!"}` | Response takes **2 seconds** to return. |
+| **Successful Login**         | `{"username": "validUser", "password": "ValidPass123!"}` | `200 OK` <br> Contains: JWT token. |
+
+---
+
+### **Steps to Automate in Postman**
+
+#### **1. Create a Postman Collection**
+1. Name the collection: `Login API Tests`.
+2. Add test cases for each scenario as separate requests.
+
+---
+
+#### **2. Test Case Examples**
+
+##### **Test Case: Empty Username**
+1. **Request Setup**:
+   - Method: `POST`
+   - URL: `https://mockapi.rapidextras.com/login`
+   - Body:
+     ```json
+     {
+         "username": "",
+         "password": "ValidPass123!"
+     }
+     ```
+2. **Test Script**:
+   ```javascript
+   pm.test("Status code is 400", function () {
+       pm.response.to.have.status(400);
+   });
+
+   pm.test("Response message is correct", function () {
+       let jsonData = pm.response.json();
+       pm.expect(jsonData.message).to.eql("Username and password are required.");
+   });
+   ```
+
+##### **Test Case: Invalid Login**
+1. **Request Setup**:
+   ```json
+   {
+       "username": "invaliduser@example.com",
+       "password": "ValidPass123!"
+   }
+   ```
+2. **Test Script**:
+   ```javascript
+   pm.test("Status code is 401", function () {
+       pm.response.to.have.status(401);
+   });
+
+   pm.test("Response message is correct", function () {
+       let jsonData = pm.response.json();
+       pm.expect(jsonData.message).to.eql("Invalid username or password.");
+   });
+   ```
+
+##### **Test Case: Malformed JSON Response**
+1. **Request Setup**:
+   ```json
+   {
+       "username": "malformeduser@example.com",
+       "password": "ValidPass123!"
+   }
+   ```
+2. **Test Script**:
+   ```javascript
+   pm.test("Response is malformed JSON", function () {
+       let responseText = pm.response.text();
+       try {
+           JSON.parse(responseText);
+           pm.expect.fail("Response is valid JSON, but expected malformed JSON.");
+       } catch (e) {
+           pm.expect(true).to.be.true; // Test passes if JSON.parse throws an error.
+       }
+   });
+   ```
+
+##### **Test Case: Server Error**
+1. **Request Setup**:
+   ```json
+   {
+       "username": "erroruser@example.com",
+       "password": "ValidPass123!"
+   }
+   ```
+2. **Test Script**:
+   ```javascript
+   pm.test("Status code is 500", function () {
+       pm.response.to.have.status(500);
+   });
+
+   pm.test("Response message is correct", function () {
+       let jsonData = pm.response.json();
+       pm.expect(jsonData.message).to.eql("An unexpected error occurred.");
+   });
+   ```
+
+##### **Test Case: Slow Response**
+1. **Request Setup**:
+   ```json
+   {
+       "username": "slowuser@example.com",
+       "password": "ValidPass123!"
+   }
+   ```
+2. **Test Script**:
+   ```javascript
+   pm.test("Response time is 2000ms or more", function () {
+       pm.expect(pm.response.responseTime).to.be.greaterThan(2000);
+   });
+
+   pm.test("Status code is 200", function () {
+       pm.response.to.have.status(200);
+   });
+   ```
+
+##### **Test Case: Successful Login**
+1. **Request Setup**:
+   ```json
+   {
+       "username": "validUser",
+       "password": "ValidPass123!"
+   }
+   ```
+2. **Test Script**:
+   ```javascript
+   pm.test("Status code is 200", function () {
+       pm.response.to.have.status(200);
+   });
+
+   pm.test("Response contains JWT token", function () {
+       let jsonData = pm.response.json();
+       pm.expect(jsonData.token).to.be.a("string");
+   });
+   ```
+
+---
+
+#### **3. Use Postman Runner**
+1. Go to the `Login API Tests` collection and click **Run Collection**.
+2. Add test data for dynamic testing using Postman’s **Runner** or **CSV file** with fields:
+   ```csv
+   username,password,expected_status,expected_message
+   ,ValidPass123!,400,Username and password are required.
+   invaliduser@example.com,ValidPass123!,401,Invalid username or password.
+   malformeduser@example.com,ValidPass123!,malformed,Malformed JSON response.
+   erroruser@example.com,ValidPass123!,500,An unexpected error occurred.
+   slowuser@example.com,ValidPass123!,200,
+   validUser,ValidPass123!,200,
+   ```
+
+---
+
+#### **4. Generate Report**
+1. Use Newman for execution:
+   ```bash
+   newman run Login_API_Test.postman_collection.json -e Login_API_Env.json --reporters cli,html --reporter-html-export test-report.html
+   ```
+2. Review the `test-report.html` for detailed execution results.
+
+---
+
+This approach ensures all behaviors are tested and provides a clear execution report. Let me know if you'd like to dive deeper!
