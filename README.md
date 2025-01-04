@@ -2,7 +2,8 @@
 
 
 
-Here is a comprehensive test case design for the `POST https://mockapi.rapidextras.com/login` endpoint. The test cases cover positive, negative, and edge cases to ensure thorough endpoint testing. 
+# Test Case Design
+ `POST https://mockapi.rapidextras.com/login` endpoint. The test cases cover positive, negative, and edge cases to ensure thorough endpoint testing. 
 
 ### Assumptions:
 - **Request Body**: `{ "username": "string", "password": "string" }`
