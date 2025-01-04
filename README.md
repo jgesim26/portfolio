@@ -286,8 +286,6 @@ Here's how I generate a **test execution report** from the Postman script using 
 
 ### **2. Test Execution Report (CLI Output)**
 
-Here’s an example of what the CLI report might look like:
-
 ```
 Iteration 1 of 1
 ┌────────────────────────────┬──────────────────────────┬──────────┐
