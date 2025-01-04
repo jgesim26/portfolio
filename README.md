@@ -501,5 +501,3 @@ Collection run completed.
 2. Review the `test-report.html` for detailed execution results.
 
 ---
-
-This approach ensures all behaviors are tested and provides a clear execution report. Let me know if you'd like to dive deeper!
