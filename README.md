@@ -258,7 +258,7 @@ pm.test("Response contains expected fields", function () {
 
 # Execution Report
 
-To generate a **test execution report** from the Postman script using **Newman**, follow these steps:
+Here's how I generate a **test execution report** from the Postman script using **Newman**, follow these steps:
 
 ---
 
@@ -283,7 +283,7 @@ To generate a **test execution report** from the Postman script using **Newman**
 
 ---
 
-### **2. Sample Test Execution Report (CLI Output)**
+### **2. Test Execution Report (CLI Output)**
 
 Here’s an example of what the CLI report might look like:
 
@@ -312,7 +312,7 @@ Collection run completed.
 
 ---
 
-### **5. HTML Report Summary**
+### **3. HTML Report Summary**
 
 
 | **Test Case**               | **Status** | **Execution Time** |
